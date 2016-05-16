@@ -1,6 +1,7 @@
 # install.packages("RISmed")
 library(RISmed)
-cancerType <- 'breast cancer'
+library(ggplot2)
+cancerType <- 'Prostate Cancer'
 query <- paste ("",cancerType,"[MeSh]")
 res <- EUtilsSummary(query)
 QueryCount(res)
@@ -9,19 +10,23 @@ country <- Country(EUtilsGet(res))
 typeof(country)
 country
 length(country)
+length(unique(country))
 DF <- as.data.frame(table(country))
 attach(DF)
-DF <- DF[order(Freq),] 
-
-qplot(factor(Freq), data=DF, geom="bar", fill=factor(Freq))+
-coord_flip()
-    
-ggplot(DF, aes(country , Freq,  fill=Freq)) + 
+DF       <- DF[order(-Freq),] 
+names(DF)<- c("Country","NbreOfPublications")
+  
+ggplot(DF, aes(Country , NbreOfPublications,  fill=NbreOfPublications)) + 
     coord_flip() +
-    geom_bar(stat="identity", width=.90) +
-    labs(fill="Breast Cancer") + 
-    xlab("Country") +
-    ylab("Number of Publication") + 
-    guides(fill=FALSE) +
-    ggtitle("Breast Cancer Publication Per Country") + 
-    theme_minimal()    
+    geom_bar(stat="identity", width=.8) +
+    labs(fill=paste("",cancerType , " (n)", sep="")) + 
+    ggtitle(paste("",cancerType , " - Publications Per Country", sep="")) +
+    labs(x="Country",y="Number of Publications")  +
+    theme_grey()
+
+# Save Plot     
+FileName <- paste("ProstateCancer", "PublicationsPerCountry",sep="")
+ggsave(filename=paste(FileName,"png",sep="."))
+
+# Export data file
+write.table(DF, file=paste(FileName,"txt",sep="."), sep="\t", row.names=F)
