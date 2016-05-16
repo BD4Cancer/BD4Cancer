@@ -1,0 +1,27 @@
+# install.packages("RISmed")
+library(RISmed)
+cancerType <- 'breast cancer'
+query <- paste ("",cancerType,"[MeSh]")
+res <- EUtilsSummary(query)
+QueryCount(res)
+
+country <- Country(EUtilsGet(res))
+typeof(country)
+country
+length(country)
+DF <- as.data.frame(table(country))
+attach(DF)
+DF <- DF[order(Freq),] 
+
+qplot(factor(Freq), data=DF, geom="bar", fill=factor(Freq))+
+coord_flip()
+    
+ggplot(DF, aes(country , Freq,  fill=Freq)) + 
+    coord_flip() +
+    geom_bar(stat="identity", width=.90) +
+    labs(fill="Breast Cancer") + 
+    xlab("Country") +
+    ylab("Number of Publication") + 
+    guides(fill=FALSE) +
+    ggtitle("Breast Cancer Publication Per Country") + 
+    theme_minimal()    
