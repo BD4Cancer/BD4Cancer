@@ -1,0 +1,27 @@
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Script File: GoogleTrends.R  
+# Date of creation: 3 May 2016
+# Date of last modification: 15 May 2016
+# Author: Seraya Maouche <seraya.maouche@iscb.org>
+# Projects: Epidemium (http://www.epidemium.cc) - BD4Cancer (http://bd4cancer.tbiscientific.com)
+# Short Description: This script provides an interface for retrieving and displaying the information 
+#                     returned online by Google Trends.
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# Install devtools library that will allow you to install R packages from Github
+if (!require("devtools")) install.packages("devtools")
+# Install gtrendsR 
+devtools::install_github("PMassicotte/gtrendsR")
+
+#Load required package
+library(gtrendsR)
+
+# Connect to Google account using gconnect()
+usr <- "seraya.maouche@iscb.org"
+psw <- "XXXXXXXXXXXXXX"
+gconnect(usr, psw) 
+
+
+# Google Trends Query
+lang_trend <- gtrends(c("Herceptin","Trastuzumab"), res="7d")
+plot(lang_trend)
